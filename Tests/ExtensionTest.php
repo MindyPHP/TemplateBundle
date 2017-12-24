@@ -12,8 +12,9 @@ namespace Mindy\Bundle\TemplateBundle\Tests\DependencyInjection;
 
 use Mindy\Bundle\TemplateBundle\DependencyInjection\TemplateExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use PHPUnit\Framework\TestCase;
 
-class ExtensionTest extends \PHPUnit_Framework_TestCase
+class ExtensionTest extends TestCase
 {
     /**
      * @var TemplateExtension

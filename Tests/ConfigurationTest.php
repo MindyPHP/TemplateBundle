@@ -12,9 +12,10 @@ namespace Mindy\Bundle\TemplateBundle\Tests\DependencyInjection;
 
 use Mindy\Bundle\TemplateBundle\DependencyInjection\Configuration;
 use Mindy\Template\Renderer;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Processor;
 
-class ConfigurationTest extends \PHPUnit_Framework_TestCase
+class ConfigurationTest extends TestCase
 {
     public function testDefaultConfig()
     {

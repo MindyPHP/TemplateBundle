@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Mindy Framework.
  * (c) 2017 Maxim Falaleev
@@ -11,15 +13,36 @@
 namespace Mindy\Bundle\TemplateBundle\VariableProvider;
 
 use Mindy\Template\VariableProviderInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Class AppVariableProvider.
  */
-class AppVariableProvider implements VariableProviderInterface, ContainerAwareInterface
+class AppVariableProvider implements VariableProviderInterface
 {
-    use ContainerAwareTrait;
+    /**
+     * @var \Symfony\Component\HttpFoundation\Request
+     */
+    protected $request;
+
+    /**
+     * @var TokenStorageInterface
+     */
+    protected $tokenStorage;
+
+    /**
+     * AppVariableProvider constructor.
+     *
+     * @param RequestStack          $requestStack
+     * @param TokenStorageInterface $tokenStorage
+     */
+    public function __construct(RequestStack $requestStack, TokenStorageInterface $tokenStorage = null)
+    {
+        $this->request = $requestStack->getCurrentRequest();
+        $this->tokenStorage = $tokenStorage;
+    }
 
     /**
      * @return array
@@ -27,43 +50,32 @@ class AppVariableProvider implements VariableProviderInterface, ContainerAwareIn
     public function getData()
     {
         return [
-            'request' => $this->getRequest(),
+            // TODO deprecate since 5.0
             'user' => $this->getUser(),
+
+            'current_user' => $this->getUser(),
+            'request' => $this->request,
         ];
     }
 
     /**
-     * Get a user from the Security Token Storage.
-     *
-     * @throws \LogicException If SecurityBundle is not available
-     *
-     * @return mixed
-     *
-     * @see TokenInterface::getUser()
+     * @return null|UserInterface
      */
     protected function getUser()
     {
-        if (!$this->container->has('security.token_storage')) {
-            return;
+        if (null === $this->tokenStorage) {
+            return null;
         }
 
-        if (null === $token = $this->container->get('security.token_storage')->getToken()) {
-            return;
+        if (null === $token = $this->tokenStorage->getToken()) {
+            return null;
         }
 
         if (!is_object($user = $token->getUser())) {
             // e.g. anonymous authentication
-            return;
+            return null;
         }
 
         return $user;
-    }
-
-    /**
-     * @return \Symfony\Component\HttpFoundation\Request
-     */
-    protected function getRequest()
-    {
-        return $this->container->get('request_stack')->getCurrentRequest();
     }
 }

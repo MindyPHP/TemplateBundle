@@ -12,6 +12,7 @@ namespace Mindy\Bundle\TemplateBundle\Tests;
 
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
+use PHPUnit\Framework\TestCase;
 
 class KernelTestCase extends TestCase
 {

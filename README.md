@@ -17,3 +17,12 @@ Resources
     in the [main Mindy repository](https://github.com/MindyPHP/mindy)
 
 ![yandex](https://mc.yandex.ru/watch/43423684 "yandex")
+
+# Configuration
+
+```yml
+template:
+  cache_dir: '%kernel.cache_dir%/templates'
+  mode: 1 # 1 - always, 0 - normal, -1 - never recompile templates
+  auto_escape: true # escape all output from helpers, functions and variables
+```

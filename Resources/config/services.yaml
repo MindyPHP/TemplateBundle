@@ -1,0 +1,53 @@
+parameters:
+    mindy.template.base_path: %kernel.root_dir%/Resources
+    mindy.template.dir: templates
+    mindy.template.theme: default
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    _instanceof:
+        Mindy\Component\Template\LibraryInterface:
+            tags: ['template.library']
+
+        Mindy\Component\Template\VariableProviderInterface:
+            tags: ['template.variable_provider']
+
+    Mindy\Bundle\TemplateBundle\:
+        resource: '../../*'
+        exclude: '../../{Tests}'
+
+    Mindy\Template\Renderer:
+        arguments:
+            -
+                source: "@=container.get('template.finder.chain').getPaths()"
+                target: '%kernel.cache_dir%/templates'
+                mode: 0
+                autoEscape: true
+
+    Mindy\Finder\TemplateFinder:
+        arguments:
+            - '%mindy.template.base_path%'
+            - '%mindy.template.dir%'
+
+    Mindy\Finder\ThemeTemplateFinder:
+        arguments:
+            - '%kernel.root_dir%/Resources'
+            - '%mindy.template.theme%'
+            - '%mindy.template.dir%'
+
+    Mindy\Finder\BundlesTemplateFinder:
+        arguments:
+            - []
+            - '%mindy.template.dir%'
+
+    Mindy\Finder\ChainTemplateFinder:
+        arguments:
+            - 'template.finder.templates'
+
+    Mindy\Bundle\TemplateBundle\VariableProvider\AppVariableProvider:
+        calls:
+            - [setContainer, ['@service_container']]
