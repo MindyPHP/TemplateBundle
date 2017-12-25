@@ -12,9 +12,7 @@ declare(strict_types=1);
 
 namespace Mindy\Bundle\TemplateBundle\DependencyInjection;
 
-use Mindy\Template\TemplateEngine;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -33,9 +31,5 @@ class TemplateExtension extends Extension
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yaml');
-
-        $container->addAliases([
-            'templating.engine.mindy' => new Alias(TemplateEngine::class)
-        ]);
     }
 }

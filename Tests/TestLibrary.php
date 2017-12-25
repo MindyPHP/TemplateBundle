@@ -10,9 +10,9 @@
 
 namespace Mindy\Bundle\TemplateBundle\Tests;
 
-use Mindy\Template\Library;
+use Mindy\Template\Library\AbstractLibrary;
 
-class TestLibrary extends Library
+class TestLibrary extends AbstractLibrary
 {
     /**
      * @return array

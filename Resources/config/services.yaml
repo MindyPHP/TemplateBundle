@@ -49,3 +49,7 @@ services:
             $target: '%mindy.template.path%'
             $mode: '%mindy.template.mode%'
             $exceptionHandler: '%mindy.template.exception_handler%'
+
+    templating.engine.mindy:
+        alias: Mindy\Template\TemplateEngine
+        public: true
