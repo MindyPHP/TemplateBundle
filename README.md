@@ -1,7 +1,7 @@
 # Template Bundle
 
 [![Build Status](https://travis-ci.org/MindyPHP/TemplateBundle.svg?branch=master)](https://travis-ci.org/MindyPHP/TemplateBundle)
-[![Coverage Status](https://img.shields.io/codeclimate/coverage/github/MindyPHP/TemplateBundle.svg)](https://codeclimate.com/github/MindyPHP/TemplateBundle/coverage)
+[![codecov](https://codecov.io/gh/MindyPHP/TemplateBundle/branch/master/graph/badge.svg)](https://codecov.io/gh/MindyPHP/TemplateBundle)
 [![Latest Stable Version](https://poser.pugx.org/mindy/template-bundle/v/stable.svg)](https://packagist.org/packages/mindy/template-bundle)
 [![Total Downloads](https://poser.pugx.org/mindy/template-bundle/downloads.svg)](https://packagist.org/packages/mindy/template-bundle)
 
@@ -20,9 +20,10 @@ Resources
 
 # Configuration
 
-```yml
-template:
-  cache_dir: '%kernel.cache_dir%/templates'
-  mode: 1 # 1 - always, 0 - normal, -1 - never recompile templates
-  auto_escape: true # escape all output from helpers, functions and variables
+```yaml
+parameters:
+    mindy.template.path: '%kernel.root_dir%/Resources/templates'
+    mindy.template.theme: default
+    mindy.template.mode: 0
+    mindy.template.exception_handler: true
 ```
