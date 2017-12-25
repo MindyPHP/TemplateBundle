@@ -12,10 +12,11 @@ declare(strict_types=1);
 
 namespace Mindy\Bundle\TemplateBundle\DependencyInjection;
 
+use Mindy\Template\TemplateEngine;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class TemplateExtension extends Extension
@@ -30,50 +31,11 @@ class TemplateExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.xml');
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.yaml');
 
-        $configuration = $this->getConfiguration($configs, $container);
-        $config = $this->processConfiguration($configuration, $configs);
-
-        $container->setParameter('mindy.template.mode', $config['mode']);
-        $container->setParameter('mindy.template.auto_escape', $config['auto_escape']);
-        $container->setParameter('mindy.template.cache_dir', $config['cache_dir']);
-
-        if ($this->isConfigEnabled($container, $config['theme'])) {
-            $this->registerThemeTemplateFinderConfiguration($config['theme'], $container, $loader);
-        }
-
-        if ($this->isConfigEnabled($container, $config['bundles'])) {
-            $this->registerBundlesTemplateFinderConfiguration($config['bundles'], $container, $loader);
-        }
-    }
-
-    protected function registerBundlesTemplateFinderConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
-    {
-        $bundlesDefinition = $container->findDefinition('template.finder.bundles');
-
-        $dirs = [];
-        $templatesDir = $container->getParameterBag()->resolveValue($bundlesDefinition->getArgument('$templatesDir'));
-        foreach ($container->getParameter('kernel.bundles') as $bundle => $class) {
-            $reflection = new \ReflectionClass($class);
-            if (is_dir($dir = dirname($reflection->getFileName()))) {
-                if (is_dir(sprintf('%s/Resources/%s', $dir, $templatesDir))) {
-                    $dirs[] = $dir;
-                }
-            }
-        }
-        $bundlesDefinition->replaceArgument('$bundlesDirs', $dirs);
-
-        $definition = $container->findDefinition('template.finder.chain');
-        $definition->addMethodCall('addFinder', [new Reference('template.finder.bundles')]);
-    }
-
-    protected function registerThemeTemplateFinderConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
-    {
-        $definition = $container->findDefinition('template.finder.chain');
-        $definition->addMethodCall('addFinder', [new Reference('template.finder.theme')]);
-
-        $container->setParameter('template.theme', $config['theme']);
+        $container->addAliases([
+            'templating.engine.mindy' => new Alias(TemplateEngine::class)
+        ]);
     }
 }

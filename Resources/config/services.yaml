@@ -1,7 +1,8 @@
 parameters:
-    mindy.template.base_path: %kernel.root_dir%/Resources
-    mindy.template.dir: templates
+    mindy.template.path: '%kernel.root_dir%/Resources/templates'
     mindy.template.theme: default
+    mindy.template.mode: 0
+    mindy.template.exception_handler: true
 
 services:
     _defaults:
@@ -10,44 +11,41 @@ services:
         public: false
 
     _instanceof:
-        Mindy\Component\Template\LibraryInterface:
+        Mindy\Template\Library\LibraryInterface:
             tags: ['template.library']
 
-        Mindy\Component\Template\VariableProviderInterface:
+        Mindy\Template\VariableProviderInterface:
             tags: ['template.variable_provider']
 
     Mindy\Bundle\TemplateBundle\:
         resource: '../../*'
-        exclude: '../../{Tests}'
+        exclude: '../../{Tests,vendor}'
 
-    Mindy\Template\Renderer:
+    Mindy\Template\Finder\TemplateFinder:
+        public: true
         arguments:
-            -
-                source: "@=container.get('template.finder.chain').getPaths()"
-                target: '%kernel.cache_dir%/templates'
-                mode: 0
-                autoEscape: true
+            - '%kernel.root_dir%/Resources/templates'
 
-    Mindy\Finder\TemplateFinder:
+    Mindy\Bundle\TemplateBundle\Finder\ThemeTemplateFinder:
+        public: true
         arguments:
-            - '%mindy.template.base_path%'
-            - '%mindy.template.dir%'
+            $themesPath: '%kernel.root_dir%/Resources/themes'
+            $theme: '%mindy.template.theme%'
 
-    Mindy\Finder\ThemeTemplateFinder:
+    Mindy\Bundle\TemplateBundle\Finder\BundleTemplateFinder:
+        public: true
         arguments:
-            - '%kernel.root_dir%/Resources'
-            - '%mindy.template.theme%'
-            - '%mindy.template.dir%'
+            $bundles: '@=container.get("kernel").getBundles()'
 
-    Mindy\Finder\BundlesTemplateFinder:
+    Mindy\Template\Finder\ChainFinder:
+        public: true
         arguments:
-            - []
-            - '%mindy.template.dir%'
+            $finders: ['@Mindy\Bundle\TemplateBundle\Finder\ThemeTemplateFinder', '@Mindy\Template\Finder\TemplateFinder', '@Mindy\Bundle\TemplateBundle\Finder\BundleTemplateFinder']
 
-    Mindy\Finder\ChainTemplateFinder:
+    Mindy\Template\TemplateEngine:
+        public: true
         arguments:
-            - 'template.finder.templates'
-
-    Mindy\Bundle\TemplateBundle\VariableProvider\AppVariableProvider:
-        calls:
-            - [setContainer, ['@service_container']]
+            $finder: '@Mindy\Template\Finder\ChainFinder'
+            $target: '%mindy.template.path%'
+            $mode: '%mindy.template.mode%'
+            $exceptionHandler: '%mindy.template.exception_handler%'

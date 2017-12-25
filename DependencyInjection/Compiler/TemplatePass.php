@@ -12,6 +12,9 @@ declare(strict_types=1);
 
 namespace Mindy\Bundle\TemplateBundle\DependencyInjection\Compiler;
 
+use Mindy\Template\Library\LibraryInterface;
+use Mindy\Template\TemplateEngine;
+use Mindy\Template\VariableProviderInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -25,30 +28,26 @@ class TemplatePass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (false === $container->hasDefinition('templating.engine.mindy')) {
+        if (false === $container->hasDefinition(TemplateEngine::class)) {
             return;
         }
 
-        $definitionChain = $container->getDefinition('template.finder.chain');
-        if ($definitionChain) {
-            foreach ($container->findTaggedServiceIds('template.finder') as $id => $attributes) {
-                $definitionChain->addMethodCall('addFinder', [new Reference($id)]);
-            }
+        $container
+            ->registerForAutoconfiguration(LibraryInterface::class)
+            ->addTag('template.library');
+
+        $container
+            ->registerForAutoconfiguration(VariableProviderInterface::class)
+            ->addTag('template.variable_provider');
+
+        $definition = $container->getDefinition(TemplateEngine::class);
+
+        foreach ($container->findTaggedServiceIds('template.library') as $id => $attributes) {
+            $definition->addMethodCall('addLibrary', [new Reference($id)]);
         }
 
-        $definition = $container->getDefinition('templating.engine.mindy');
-        if ($definition) {
-            foreach ($container->findTaggedServiceIds('template.library') as $id => $attributes) {
-                $definition->addMethodCall('addLibrary', [new Reference($id)]);
-            }
-
-            foreach ($container->findTaggedServiceIds('template.helper') as $id => $attributes) {
-                $definition->addMethodCall('addHelper', [key($attributes), current($attributes)]);
-            }
-
-            foreach ($container->findTaggedServiceIds('template.variable_provider') as $id => $attributes) {
-                $definition->addMethodCall('addVariableProvider', [new Reference($id)]);
-            }
+        foreach ($container->findTaggedServiceIds('template.variable_provider') as $id => $attributes) {
+            $definition->addMethodCall('addVariableProvider', [new Reference($id)]);
         }
     }
 }

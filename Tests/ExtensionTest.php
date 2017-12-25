@@ -11,6 +11,8 @@
 namespace Mindy\Bundle\TemplateBundle\Tests\DependencyInjection;
 
 use Mindy\Bundle\TemplateBundle\DependencyInjection\TemplateExtension;
+use Mindy\Template\Finder\ChainFinder;
+use Mindy\Template\TemplateEngine;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use PHPUnit\Framework\TestCase;
 
@@ -43,11 +45,13 @@ class ExtensionTest extends TestCase
         $this->container->loadFromExtension($this->extension->getAlias());
         $this->container->compile();
 
-        $engine = $this->container->get('template');
-        $this->assertInstanceOf('Mindy\Template\Renderer', $engine);
+        $this->assertTrue($this->container->has('templating.engine.mindy'));
 
-        $defaultFinder = $this->container->get('template.finder.templates');
-        $this->assertInstanceOf('Mindy\Finder\TemplateFinder', $defaultFinder);
+        $this->assertTrue($this->container->has(TemplateEngine::class));
+        $definition = $this->container->getDefinition(TemplateEngine::class);
+        $this->assertSame(TemplateEngine::class, $definition->getClass());
+
+        $this->assertTrue($this->container->has(ChainFinder::class));
     }
 
     public function testParameters()
@@ -57,11 +61,12 @@ class ExtensionTest extends TestCase
         $this->container->loadFromExtension($this->extension->getAlias());
         $this->container->compile();
 
-        $this->assertSame(0, $this->container->getParameter('mindy.template.mode'));
-        $this->assertSame('templates', $this->container->getParameter('mindy.template.dir'));
+        $this->assertSame(
+            sprintf("%s/Resources/templates", __DIR__),
+            $this->container->getParameter('mindy.template.path')
+        );
         $this->assertSame('default', $this->container->getParameter('mindy.template.theme'));
-        $this->assertSame(__DIR__.'/Resources', $this->container->getParameter('mindy.template.base_path'));
-        $this->assertSame(__DIR__.'/cache/templates', $this->container->getParameter('mindy.template.cache_dir'));
-        $this->assertTrue($this->container->getParameter('mindy.template.auto_escape'));
+        $this->assertSame(0, $this->container->getParameter('mindy.template.mode'));
+        $this->assertTrue($this->container->getParameter('mindy.template.exception_handler'));
     }
 }
