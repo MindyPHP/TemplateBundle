@@ -34,10 +34,12 @@ class TemplatePass implements CompilerPassInterface
 
         $container
             ->registerForAutoconfiguration(LibraryInterface::class)
+            ->setPublic(true)
             ->addTag('template.library');
 
         $container
             ->registerForAutoconfiguration(VariableProviderInterface::class)
+            ->setPublic(true)
             ->addTag('template.variable_provider');
 
         $definition = $container->getDefinition(TemplateEngine::class);

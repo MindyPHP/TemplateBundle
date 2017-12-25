@@ -12,9 +12,11 @@ services:
 
     _instanceof:
         Mindy\Template\Library\LibraryInterface:
+            public: true
             tags: ['template.library']
 
         Mindy\Template\VariableProviderInterface:
+            public: true
             tags: ['template.variable_provider']
 
     Mindy\Bundle\TemplateBundle\:
