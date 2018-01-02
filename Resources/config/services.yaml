@@ -42,7 +42,10 @@ services:
     Mindy\Template\Finder\ChainFinder:
         public: true
         arguments:
-            $finders: ['@Mindy\Bundle\TemplateBundle\Finder\ThemeTemplateFinder', '@Mindy\Template\Finder\TemplateFinder', '@Mindy\Bundle\TemplateBundle\Finder\BundleTemplateFinder']
+            $finders:
+                - '@Mindy\Bundle\TemplateBundle\Finder\ThemeTemplateFinder'
+                - '@Mindy\Template\Finder\TemplateFinder'
+                - '@Mindy\Bundle\TemplateBundle\Finder\BundleTemplateFinder'
 
     Mindy\Template\TemplateEngine:
         public: true

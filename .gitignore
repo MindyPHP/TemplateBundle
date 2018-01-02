@@ -1,5 +1,7 @@
 .idea
+composer.lock
+.DS_Store
+
 /vendor
 /coverage
-composer.lock
 /Tests/var

@@ -19,9 +19,9 @@ Resources
 # Configuration
 
 ```yaml
-parameters:
-    mindy.template.path: '%kernel.root_dir%/Resources/templates'
-    mindy.template.theme: default
-    mindy.template.mode: 0
-    mindy.template.exception_handler: true
+template:
+    path: '%kernel.root_dir%/Resources/templates'
+    theme: default
+    mode: 0
+    exception_handler: true
 ```
