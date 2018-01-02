@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Mindy Framework.
- * (c) 2017 Maxim Falaleev
+ * (c) 2018 Maxim Falaleev
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,9 +15,9 @@ namespace Mindy\Bundle\TemplateBundle\Tests\DependencyInjection;
 use Mindy\Bundle\TemplateBundle\DependencyInjection\TemplateExtension;
 use Mindy\Template\Finder\ChainFinder;
 use Mindy\Template\TemplateEngine;
+use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\DependencyInjection\FrameworkExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use PHPUnit\Framework\TestCase;
 
 class ExtensionTest extends TestCase
 {
@@ -66,7 +68,7 @@ class ExtensionTest extends TestCase
         $this->assertTrue($this->container->has(ChainFinder::class));
 
         $this->assertSame(
-            sprintf("%s/Resources/templates", __DIR__),
+            sprintf('%s/Resources/templates', __DIR__),
             $this->container->getParameter('mindy.template.path')
         );
         $this->assertSame('default', $this->container->getParameter('mindy.template.theme'));
