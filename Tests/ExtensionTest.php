@@ -13,15 +13,16 @@ namespace Mindy\Bundle\TemplateBundle\Tests\DependencyInjection;
 use Mindy\Bundle\TemplateBundle\DependencyInjection\TemplateExtension;
 use Mindy\Template\Finder\ChainFinder;
 use Mindy\Template\TemplateEngine;
+use Symfony\Bundle\FrameworkBundle\DependencyInjection\FrameworkExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use PHPUnit\Framework\TestCase;
 
 class ExtensionTest extends TestCase
 {
     /**
-     * @var TemplateExtension
+     * @var TemplateExtension[]
      */
-    protected $extension;
+    protected $extensions;
     /**
      * @var ContainerBuilder
      */
@@ -29,20 +30,31 @@ class ExtensionTest extends TestCase
 
     public function setUp()
     {
-        $this->extension = new TemplateExtension();
+        $this->extensions = [
+            new FrameworkExtension(),
+            new TemplateExtension(),
+        ];
 
         $this->container = new ContainerBuilder();
+        $this->container->setParameter('kernel.container_class', 'testContainer');
+        $this->container->setParameter('kernel.secret', '123');
+        $this->container->setParameter('kernel.charset', 'utf-8');
+        $this->container->setParameter('kernel.debug', true);
         $this->container->setParameter('kernel.bundles', []);
         $this->container->setParameter('kernel.cache_dir', __DIR__.'/cache');
         $this->container->setParameter('kernel.root_dir', __DIR__);
-        $this->container->registerExtension($this->extension);
+        foreach ($this->extensions as $ext) {
+            $this->container->registerExtension($ext);
+        }
     }
 
     public function testServices()
     {
         // An extension is only loaded in the container if a configuration is provided for it.
         // Then, we need to explicitely load it.
-        $this->container->loadFromExtension($this->extension->getAlias());
+        foreach ($this->extensions as $ext) {
+            $this->container->loadFromExtension($ext->getAlias());
+        }
         $this->container->compile();
 
         $this->assertTrue($this->container->has('templating.engine.mindy'));
@@ -52,14 +64,6 @@ class ExtensionTest extends TestCase
         $this->assertSame(TemplateEngine::class, $definition->getClass());
 
         $this->assertTrue($this->container->has(ChainFinder::class));
-    }
-
-    public function testParameters()
-    {
-        // An extension is only loaded in the container if a configuration is provided for it.
-        // Then, we need to explicitely load it.
-        $this->container->loadFromExtension($this->extension->getAlias());
-        $this->container->compile();
 
         $this->assertSame(
             sprintf("%s/Resources/templates", __DIR__),
