@@ -1,9 +1,3 @@
-parameters:
-    mindy.template.path: '%kernel.root_dir%/Resources/templates'
-    mindy.template.theme: default
-    mindy.template.mode: 0
-    mindy.template.exception_handler: true
-
 services:
     _defaults:
         autowire: true
@@ -51,7 +45,7 @@ services:
         public: true
         arguments:
             $finder: '@Mindy\Template\Finder\ChainFinder'
-            $target: '%mindy.template.path%'
+            $target: '%mindy.template.cache%'
             $mode: '%mindy.template.mode%'
             $exceptionHandler: '%mindy.template.exception_handler%'
 
