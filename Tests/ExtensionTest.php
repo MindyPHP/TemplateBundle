@@ -68,8 +68,8 @@ class ExtensionTest extends TestCase
         $this->assertTrue($this->container->has(ChainFinder::class));
 
         $this->assertSame(
-            sprintf('%s/Resources/templates', __DIR__),
-            $this->container->getParameter('mindy.template.path')
+            sprintf('%s/cache/templates', __DIR__),
+            $this->container->getParameter('mindy.template.cache')
         );
         $this->assertSame('default', $this->container->getParameter('mindy.template.theme'));
         $this->assertSame(0, $this->container->getParameter('mindy.template.mode'));

@@ -27,8 +27,8 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('template');
         $rootNode
             ->children()
-                ->scalarNode('path')
-                    ->defaultValue('%kernel.root_dir%/Resources/templates')
+                ->scalarNode('cache')
+                    ->defaultValue('%kernel.cache_dir%/templates')
                 ->end()
                 ->scalarNode('theme')
                     ->defaultValue('default')

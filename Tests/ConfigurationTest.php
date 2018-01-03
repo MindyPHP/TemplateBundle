@@ -25,7 +25,7 @@ class ConfigurationTest extends TestCase
 
         $this->assertEquals(
             [
-                'path' => '%kernel.root_dir%/Resources/templates',
+                'cache' => '%kernel.cache_dir%/templates',
                 'theme' => 'default',
                 'mode' => 0,
                 'exception_handler' => true,
