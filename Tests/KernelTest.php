@@ -59,10 +59,10 @@ class KernelTest extends KernelTestCase
         // Template finder
         $templateFinder = $container->get(TemplateFinder::class);
         $this->assertSame([
-            __DIR__.'/Resources/templates',
+            __DIR__.'/templates',
         ], $templateFinder->getPaths());
         $this->assertSame(
-            __DIR__.'/Resources/templates/test/homepage.html',
+            __DIR__.'/templates/test/homepage.html',
             $templateFinder->find('test/homepage.html')
         );
         $this->assertSame(
@@ -73,10 +73,10 @@ class KernelTest extends KernelTestCase
         // Theme finder
         $themeFinder = $container->get(ThemeTemplateFinder::class);
         $this->assertSame([
-            __DIR__.'/Resources/themes/default/templates',
+            __DIR__.'/themes/default/templates',
         ], $themeFinder->getPaths());
         $this->assertSame(
-            __DIR__.'/Resources/themes/default/templates/test/homepage.html',
+            __DIR__.'/themes/default/templates/test/homepage.html',
             $themeFinder->find('test/homepage.html')
         );
         $this->assertSame(
@@ -86,21 +86,21 @@ class KernelTest extends KernelTestCase
 
         $themeFinder->setTheme('attic');
         $this->assertSame([
-            __DIR__.'/Resources/themes/attic/templates',
+            __DIR__.'/themes/attic/templates',
         ], $themeFinder->getPaths());
 
         $themeFinder->setTheme('rise');
         $this->assertSame([
-            __DIR__.'/Resources/themes/rise/templates',
+            __DIR__.'/themes/rise/templates',
         ], $themeFinder->getPaths());
 
         $chainFinder = $container->get(ChainFinder::class);
         $this->assertSame(
-            __DIR__.'/Resources/templates/test/only_in_templates.html',
+            __DIR__.'/templates/test/only_in_templates.html',
             $chainFinder->find('test/only_in_templates.html')
         );
         $this->assertSame(
-            __DIR__.'/Resources/themes/rise/templates/test/only_rise_theme.html',
+            __DIR__.'/themes/rise/templates/test/only_rise_theme.html',
             $chainFinder->find('test/only_rise_theme.html')
         );
     }

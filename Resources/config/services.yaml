@@ -20,12 +20,12 @@ services:
     Mindy\Template\Finder\TemplateFinder:
         public: true
         arguments:
-            - '%kernel.root_dir%/Resources/templates'
+            - '%mindy.template.templates_path%'
 
     Mindy\Bundle\TemplateBundle\Finder\ThemeTemplateFinder:
         public: true
         arguments:
-            $themesPath: '%kernel.root_dir%/Resources/themes'
+            $themesPath: '%mindy.template.themes_path%'
             $theme: '%mindy.template.theme%'
 
     Mindy\Bundle\TemplateBundle\Finder\BundleTemplateFinder:

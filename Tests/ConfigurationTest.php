@@ -29,6 +29,8 @@ class ConfigurationTest extends TestCase
                 'theme' => 'default',
                 'mode' => 0,
                 'exception_handler' => true,
+                'templates_path' => '%kernel.project_dir%/templates',
+                'themes_path' => '%kernel.project_dir%/themes',
             ],
             $node->finalize($node->normalize([]))
         );

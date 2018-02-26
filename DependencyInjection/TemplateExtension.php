@@ -37,6 +37,8 @@ class TemplateExtension extends Extension
 
         $container->setParameter('mindy.template.cache', $config['cache']);
         $container->setParameter('mindy.template.theme', $config['theme']);
+        $container->setParameter('mindy.template.themes_path', $config['themes_path']);
+        $container->setParameter('mindy.template.templates_path', $config['templates_path']);
         $container->setParameter('mindy.template.mode', $config['mode']);
         $container->setParameter('mindy.template.exception_handler', $config['exception_handler']);
     }

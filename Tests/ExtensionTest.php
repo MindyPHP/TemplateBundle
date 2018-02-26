@@ -45,6 +45,7 @@ class ExtensionTest extends TestCase
         $this->container->setParameter('kernel.bundles', []);
         $this->container->setParameter('kernel.cache_dir', __DIR__.'/cache');
         $this->container->setParameter('kernel.root_dir', __DIR__);
+        $this->container->setParameter('kernel.project_dir', __DIR__.'/../');
         foreach ($this->extensions as $ext) {
             $this->container->registerExtension($ext);
         }
